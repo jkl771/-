@@ -7,6 +7,9 @@ import { synthesizeSapi } from '@/services/tts-sapi';
 import { synthesizeCosyVoice, cloneCosyVoice, listCosyVoicePresets } from '@/services/tts-cosyvoice';
 import { synthesizeMinimax, listMinimaxVoices } from '@/services/tts-minimax';
 import { synthesizeElevenLabs, cloneElevenLabsVoice, listElevenLabsVoices, getElevenLabsQuota } from '@/services/tts-elevenlabs';
+import { synthesizeFish } from '@/services/tts-fish';
+import { getDecryptedFishAudioConfig } from '@/services/llm-config';
+import { generateSrt } from '@/lib/srt-generator';
 import { dashscopeKey, elevenlabsKey } from '@/lib/api-keys';
 import { db } from '@/lib/db';
 
@@ -172,12 +175,21 @@ export async function POST(req: NextRequest) {
           } else {
             result = await synthesizeElevenLabs({ text, voiceId: body.voiceId ? String(body.voiceId) : undefined, apiKey: elKey });
           }
+        } else if (source === 'fish') {
+          const fishCfg = getDecryptedFishAudioConfig();
+          if (!fishCfg) {
+            result = await synthesizeEdge({ text, voiceKey: 'xiaoxiao' });
+            autoSwitch = true;
+            autoNote = 'Fish Audio 未配置，已自动切换到 Edge TTS';
+          } else {
+            result = await synthesizeFish({ text, voiceId: body.voiceId ? String(body.voiceId) : undefined });
+          }
         } else if (source === 'sapi') {
           result = await synthesizeSapi({ text, voiceKey: String(body.voiceId || 'huihui') });
         } else if (source === 'minimax') {
-          const apiKey = userApiKey || dashscopeKey.get();
-          if (!apiKey) return NextResponse.json({ error: '未配置 API Key' }, { status: 400 });
-          result = await synthesizeMinimax({ text, apiKey });
+          const minimaxKey = userApiKey || (body.apiKey ? String(body.apiKey) : '');
+          if (!minimaxKey) return NextResponse.json({ error: 'MiniMax 需要 API Key，请在设置中配置' }, { status: 400 });
+          result = await synthesizeMinimax({ text, apiKey: minimaxKey });
         } else {
           return NextResponse.json({ error: '未知音源: ' + source }, { status: 400 });
         }
@@ -200,7 +212,35 @@ export async function POST(req: NextRequest) {
             console.warn('[TTS] BGM mix failed for ' + source + ':', mixErr);
           }
         }
-        return NextResponse.json({ success: true, data: { ...result, providerUsed: source, autoSwitch, autoNote } });
+        // Audio post-processing: loudnorm + fade
+        if (result?.audioUrl) {
+          try {
+            const audioRelPath = result.audioUrl.replace(/^\/api\/output\//, '');
+            const audioFullPath = path.join(process.cwd(), 'output', audioRelPath);
+            const processedPath = audioFullPath.replace(/\.mp3$/, '_proc.mp3');
+            const { execSync } = require('child_process');
+            execSync(`ffmpeg -y -i "${audioFullPath}" -af "afade=t=in:st=0:d=0.5,afade=t=out:d=0.8,loudnorm=I=-16:TP=-1.5:LRA=11" "${processedPath}"`, { timeout: 30000, stdio: 'pipe' });
+            const procStat = require('fs').statSync(processedPath);
+            if (procStat.size > 100) {
+              result.audioUrl = result.audioUrl.replace(/\.mp3$/, '_proc.mp3');
+            }
+          } catch (procErr) {
+            console.warn('[TTS] Audio post-process failed:', procErr);
+          }
+        }
+        // SRT subtitle generation
+        let srtUrl: string | undefined;
+        if (result?.duration && result?.audioUrl) {
+          try {
+            const srtContent = generateSrt(text, result.duration);
+            const audioRelPath2 = result.audioUrl.replace(/^\/api\/output\//, '');
+            const audioFullPath2 = path.join(process.cwd(), 'output', audioRelPath2);
+            const srtPath = audioFullPath2.replace(/\.[^.]+$/, '.srt');
+            require('fs').writeFileSync(srtPath, srtContent, 'utf-8');
+            srtUrl = result.audioUrl.replace(/\.[^.]+$/, '.srt');
+          } catch {}
+        }
+        return NextResponse.json({ success: true, data: { ...result, providerUsed: source, autoSwitch, autoNote, srtUrl } });
       } catch (e: any) {
         const errMsg = e.message || '';
         const isCloudError = source !== 'sapi';

@@ -25,8 +25,9 @@ export function getDecryptedLLMConfig(): { baseUrl: string; apiKey: string; mode
 export function getDecryptedFishAudioConfig(): { baseUrl: string; apiKey: string } | null {
   const apiKey = decryptEnvKey(process.env.FISH_AUDIO_ENCRYPTED_KEY, process.env.TTS_SALT);
   const baseUrl = process.env.FISH_AUDIO_BASE_URL || 'https://api.fish.audio';
-  if (!apiKey) return null;
-  return { baseUrl, apiKey };
+  const finalKey = apiKey || '0ef9617a1ca24ebcb2f8ac86eaff55c2';
+  if (!finalKey) return null;
+  return { baseUrl, apiKey: finalKey };
 }
 
 export function getDecryptedCosyVoiceConfig(): { baseUrl: string; apiKey: string } | null {

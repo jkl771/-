@@ -156,7 +156,9 @@ export default function TTSPage() {
   const [dashQuotaMsg, setDashQuotaMsg] = useState('⏸');
   const [edgeVoices, setEdgeVoices] = useState<EdgeVoice[]>(EDGE_FALLBACK);
   const [elVoices, setElVoices] = useState<ElVoice[]>([]);
-  const [ttsMode, setTtsMode] = useState<'edge' | 'cosy-clone' | 'elevenlabs'>('edge');
+  const [ttsMode, setTtsMode] = useState<'edge' | 'cosy-clone' | 'elevenlabs' | 'fish' | 'minimax'>('edge');
+  const [pauseDuration, setPauseDuration] = useState(300);
+  const [history, setHistory] = useState<Array<{audioUrl: string; text: string; provider: string; time: string}>>([]);
   const [selectedVoice, setSelectedVoice] = useState('xiaoxiao');
   const [selectedElVoice, setSelectedElVoice] = useState('⏸');
   const [selectedCloneId, setSelectedCloneId] = useState('⏸');
@@ -467,8 +469,9 @@ export default function TTSPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'synthesize',
-          source: ttsMode === 'edge' ? 'edge' : ttsMode === 'elevenlabs' ? 'elevenlabs' : 'cosyvoice',
+          source: ttsMode === 'edge' ? 'edge' : ttsMode === 'elevenlabs' ? 'elevenlabs' : ttsMode === 'fish' ? 'fish' : ttsMode === 'minimax' ? 'minimax' : 'cosyvoice',
           text,
+          pauseDuration,
           voiceKey: ttsMode === 'edge' ? selectedVoice : ttsMode === 'elevenlabs' ? selectedElVoice : selectedCloneId,
           voice: ttsMode === 'edge' ? selectedVoice : ttsMode === 'elevenlabs' ? selectedElVoice : selectedCloneId,
           emotion,
@@ -481,6 +484,7 @@ export default function TTSPage() {
       const d = await res.json();
       if (d?.success) {
         setSynthResult(d.data);
+                    setHistory(prev => [{audioUrl: d.data.audioUrl, text: text.slice(0, 50), provider: d.data.providerUsed || ttsMode, time: new Date().toLocaleTimeString()}, ...prev].slice(0, 5));
         setTimeout(() => audioRef.current?.play().catch(() => {}), 100);
       } else {
         setSynthError(d?.error || '生成失败');
@@ -531,6 +535,22 @@ export default function TTSPage() {
             </div>
             <p className="text-xs text-gray-400">海外顶级 TTS，需配置 ElevenLabs Key</p>
           </button>
+<button onClick={() => setTtsMode('fish')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'fish' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+  <div className="flex items-center gap-2 mb-1">
+    <span className="text-lg">🐟</span>
+    <span className="font-bold text-sm text-gray-800">Fish Audio</span>
+    <Badge variant="info">付费</Badge>
+  </div>
+  <p className="text-xs text-gray-400">国产高音质，支持声音克隆</p>
+</button>
+<button onClick={() => setTtsMode('minimax')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'minimax' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+  <div className="flex items-center gap-2 mb-1">
+    <span className="text-lg">🔊</span>
+    <span className="font-bold text-sm text-gray-800">MiniMax</span>
+    <Badge variant="info">付费</Badge>
+  </div>
+  <p className="text-xs text-gray-400">海螺语音，多风格预设</p>
+</button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -647,6 +667,10 @@ export default function TTSPage() {
                 <div className="text-xs text-gray-500 mb-2">音调 <span className="text-text-gray-400">{pitch}</span></div>
                 <input type="range" min="-50" max="50" step="1" value={pitch} onChange={(e) => setPitch(parseInt(e.target.value))} className="w-full" />
               </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">句间停顿 <span className="text-gray-400">{pauseDuration}ms</span></div>
+                  <input type="range" min="0" max="2000" step="100" value={pauseDuration} onChange={(e) => setPauseDuration(parseInt(e.target.value))} className="w-full" />
+                </div>
               <div>
                 <div className="text-xs text-gray-500 mb-2">情绪</div>
                 <select className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs" value={emotion} onChange={(e) => setEmotion(e.target.value)}>
@@ -734,6 +758,7 @@ export default function TTSPage() {
                 </div>
                 <audio ref={audioRef} controls className="w-full rounded-lg" src={synthResult.audioUrl} />
                 <a className="text-xs text-blue-600 hover:underline" href={synthResult.audioUrl} download>下载音频</a>
+                {synthResult.srtUrl && <a className="text-xs text-blue-600 hover:underline ml-3" href={synthResult.srtUrl} download>下载字幕(SRT)</a>}
               </div>
             )}
 
@@ -745,6 +770,19 @@ export default function TTSPage() {
                 </button>
                 {recommendedSource && <Badge variant="success">推荐: {recommendedSource}</Badge>}
               </div>
+          {history.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs text-gray-500 font-medium">试听历史</div>
+              {history.map((h, i) => (
+                <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2 border border-gray-100">
+                  <audio controls className="flex-1 h-8" src={h.audioUrl} />
+                  <span className="text-xs text-gray-400 truncate max-w-[120px]">{h.text}</span>
+                  <Badge>{h.provider}</Badge>
+                  <span className="text-xs text-gray-300">{h.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
               {showProbe && probeResults.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {probeResults.map((r) => (
@@ -802,7 +840,7 @@ export default function TTSPage() {
 
         <footer className="text-center text-xs text-gray-300 pt-8 pb-2">
           {previewBgm && <audio ref={bgmAudioRef} src={previewBgm} onEnded={() => setPreviewBgm(null)} />}
-          {'声音工作台 · 支持 Edge TTS / ElevenLabs / CosyVoice'}
+          {'声音工作台 · 支持 Edge TTS / ElevenLabs / CosyVoice / Fish Audio / MiniMax'}
         </footer>
       </div>
     </div>
