@@ -1,0 +1,11 @@
+const {spawn}=require('child_process');
+const path=require('path');
+const fs=require('fs');
+const os=require('os');
+const url='https://ccmixter.org/content/SiobhanD/SiobhanD_-_Easter_Light_(Moonlight_Mix)_1.mp3';
+const tempFile=path.join(os.tmpdir(),'bgm_'+Date.now()+'.mp3');
+const s=path.join('C:/Users/HYH/Documents/视频智能体/scripts','download_ccmixter.py');
+const cp=spawn('python',[s,url,tempFile],{timeout:180000});
+cp.stdout.on('data',d=>process.stdout.write(d));
+cp.stderr.on('data',d=>process.stderr.write(d));
+cp.on('close',code=>{ console.log('code',code); console.log('exists',fs.existsSync(tempFile), fs.existsSync(tempFile)?fs.statSync(tempFile).size:0); });
