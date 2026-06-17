@@ -1,9 +1,0 @@
-const fs=require('fs');
-const p='C:/Users/HYH/Documents/视频智能体/app/api/bgm/route.ts';
-let c=fs.readFileSync(p,'utf8');
-const start=c.indexOf('\nexport async function POST');
-if(start===-1){ console.log('post-not-found'); process.exit(0); }
-const newPost=`\nexport async function POST(req: NextRequest) {\n  try {\n    const { url, name } = await req.json();\n    if (!url) return NextResponse.json({ error: '\u7f3a\u5c11\u4e0b\u8f7d\u94fe\u63a5' }, { status: 400 });\n\n    const safeName = (name || 'bgm').replace(/[^a-zA-Z0-9._\u4e00-\u9fff-]/g, '_');\n    const fileName = Date.now() + '_' + safeName + '.mp3';\n    const bgmDir = path.join(process.cwd(), 'public', 'bgm', 'library');\n    const filePath = path.join(bgmDir, fileName);\n\n    await fs.mkdir(bgmDir, { recursive: true });\n\n    if (url.includes('ccmixter.org')) {\n      const downloadScript = path.join(process.cwd(), 'scripts', 'download_ccmixter.py');\n      const child = spawn('python', [downloadScript, url, filePath], {\n        timeout: 300000,\n        stdio: ['ignore', 'ignore', 'pipe'],\n        env: { ...process.env, PYTHONIOENCODING: 'utf-8' },\n      });\n      child.unref();\n      return NextResponse.json({ success: true, data: { status: 'downloading', url: '/bgm/library/' + fileName, fileName } });\n    }\n\n    const resp = await fetch(url, { signal: AbortSignal.timeout(30000) });\n    if (!resp.ok) return NextResponse.json({ error: '\u4e0b\u8f7d\u5931\u8d25: ' + resp.status }, { status: 500 });\n    const buffer = Buffer.from(await resp.arrayBuffer());\n    await fs.writeFile(filePath, buffer);\n\n    return NextResponse.json({ success: true, data: { url: '/bgm/library/' + fileName, fileName } });\n  } catch (e: any) {\n    return NextResponse.json({ error: e?.message || '\u4e0b\u8f7d\u5931\u8d25' }, { status: 500 });\n  }\n}\n`;
-c=c.slice(0,start)+newPost;
-fs.writeFileSync(p,c,'utf8');
-console.log('rewrote-post-async');

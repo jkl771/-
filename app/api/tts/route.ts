@@ -7,8 +7,7 @@ import { synthesizeSapi } from '@/services/tts-sapi';
 import { synthesizeCosyVoice, cloneCosyVoice, listCosyVoicePresets } from '@/services/tts-cosyvoice';
 import { synthesizeMinimax, listMinimaxVoices } from '@/services/tts-minimax';
 import { synthesizeElevenLabs, cloneElevenLabsVoice, listElevenLabsVoices, getElevenLabsQuota } from '@/services/tts-elevenlabs';
-import { getApiKey } from '@/app/api/tts-key/route';
-import { getElevenLabsApiKey } from '@/app/api/el-key/route';
+import { dashscopeKey, elevenlabsKey } from '@/lib/api-keys';
 import { db } from '@/lib/db';
 
 async function saveTempFile(file: File) {
@@ -40,7 +39,7 @@ export async function POST(req: NextRequest) {
       body = json;
     }
 
-    const userApiKey = getApiKey() || undefined;
+    const userApiKey = dashscopeKey.get() || undefined;
 
     if (action === 'probe') {
       const results: Array<{ id: string; label: string; available: boolean; latencyMs?: number; error?: string }> = [];
@@ -52,7 +51,7 @@ export async function POST(req: NextRequest) {
       } catch (e: any) {
         results.push({ id: 'edge', label: 'Edge TTS', available: false, error: e.message });
       }
-      const cosyCfg = userApiKey ? { baseUrl: '', apiKey: userApiKey } : (() => { const k = getApiKey(); return k ? { baseUrl: '', apiKey: k } : null; })();
+      const cosyCfg = userApiKey ? { baseUrl: '', apiKey: userApiKey } : (() => { const k = dashscopeKey.get(); return k ? { baseUrl: '', apiKey: k } : null; })();
       if (cosyCfg?.apiKey) {
         const t0 = Date.now();
         try {
@@ -71,7 +70,7 @@ export async function POST(req: NextRequest) {
           results.push({ id: 'minimax', label: 'MiniMax TTS', available: false, error: e.message });
         }
       }
-      const elKey = getElevenLabsApiKey();
+      const elKey = elevenlabsKey.get();
       if (elKey) {
         const t0EL = Date.now();
         try {
@@ -100,12 +99,12 @@ export async function POST(req: NextRequest) {
       const cloneTarget = String(body.cloneTarget || 'cosyvoice');
       let voiceId = '';
       if (cloneTarget === 'elevenlabs') {
-        const elKey = getElevenLabsApiKey();
+        const elKey = elevenlabsKey.get();
         if (!elKey) return NextResponse.json({ error: '未配置 ElevenLabs API Key' }, { status: 400 });
         const result = await cloneElevenLabsVoice({ name, samplePath: samplePaths[0], apiKey: elKey });
         voiceId = result.voiceId;
       } else {
-        const apiKey = userApiKey || getApiKey();
+        const apiKey = userApiKey || dashscopeKey.get();
         if (!apiKey) return NextResponse.json({ error: '未配置阿里云 API Key' }, { status: 400 });
         const result = await cloneCosyVoice({ name, samplePath: samplePaths[0], apiKey });
         voiceId = result.voiceId;
@@ -138,7 +137,7 @@ export async function POST(req: NextRequest) {
           } catch (edgeErr) {
             console.warn('[TTS] Edge TTS failed, trying fallback:', edgeErr.message);
             try {
-              const fbKey = userApiKey || getApiKey();
+              const fbKey = userApiKey || dashscopeKey.get();
               if (fbKey) {
                 result = await synthesizeCosyVoice({ text, apiKey: fbKey });
                 autoSwitch = true;
@@ -153,7 +152,7 @@ export async function POST(req: NextRequest) {
             }
           }
         } else if (source === 'cosyvoice') {
-          const apiKey = userApiKey || getApiKey();
+          const apiKey = userApiKey || dashscopeKey.get();
           if (!apiKey) {
             result = await synthesizeEdge({ text, voiceKey: 'xiaoxiao' });
             autoSwitch = true;
@@ -165,7 +164,7 @@ export async function POST(req: NextRequest) {
             result = await synthesizeCosyVoice({ text, voiceId: body.voiceId ? String(body.voiceId) : undefined, apiKey });
           }
         } else if (source === 'elevenlabs') {
-          const elKey = getElevenLabsApiKey();
+          const elKey = elevenlabsKey.get();
           if (!elKey) {
             result = await synthesizeEdge({ text, voiceKey: 'xiaoxiao' });
             autoSwitch = true;
@@ -176,7 +175,7 @@ export async function POST(req: NextRequest) {
         } else if (source === 'sapi') {
           result = await synthesizeSapi({ text, voiceKey: String(body.voiceId || 'huihui') });
         } else if (source === 'minimax') {
-          const apiKey = userApiKey || getApiKey();
+          const apiKey = userApiKey || dashscopeKey.get();
           if (!apiKey) return NextResponse.json({ error: '未配置 API Key' }, { status: 400 });
           result = await synthesizeMinimax({ text, apiKey });
         } else {
@@ -264,7 +263,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'quota') {
-      const apiKey = getApiKey();
+      const apiKey = dashscopeKey.get();
       if (!apiKey) return NextResponse.json({ success: true, data: { hasKey: false, message: '未配置 API Key' } });
       try {
         // 调一次轻量合成探测额度（用极短文本）

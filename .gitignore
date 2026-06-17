@@ -5,6 +5,7 @@ out/
 .env
 output/
 data/
+tools/
 *.mp3
 *.mp4
 *.srt
@@ -12,21 +13,14 @@ data/
 *.err
 *.part
 screenshots/
-
-# Temp/patch scripts
-_*.js
-_*.mjs
-_*.py
-_backups/
 *.bak
 *.bak2
 *.bak3
-*.png
-*.txt
-!README.md
-resp_*.txt
-check_tts.js
-chk_cosy.js
-tmp_body.json
-.ttmp_synth_test.txt
-tools/
+*.fullbak
+.tsconfig.tsbuildinfo
+_backups/
+
+# Temp scripts (prefix with _)
+_*.js
+_*.mjs
+_*.py
