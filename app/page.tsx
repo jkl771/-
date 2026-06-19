@@ -1,6 +1,8 @@
 ﻿export default function HomePage() {
   const modules = [
     { href: '/extract', icon: '🔗', title: '链接文案提取', desc: '输入链接自动提取结构化文案，支持多平台' },
+    { href: '/materials', icon: '📦', title: '素材库', desc: '视频素材爬取、分类、预览管理' },
+    { href: '/materials-library', icon: '📚', title: '素材管理', desc: '素材审核、标签管理、批量操作' },
     { href: '/polish', icon: '✨', title: '润色合规去重', desc: '多风格改写、违禁词检测、去重防抄袭' },
     { href: '/tts', icon: '🎤', title: '声音克隆调参', desc: '音色克隆、语速/情绪/音高调节' },
     { href: '/avatar', icon: '👤', title: '数字人形象', desc: '生成/编辑数字人形象，视频驱动' },

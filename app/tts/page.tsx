@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { showToast } from '@/app/components/Toast';
 
 const UNSAFE_EMOTIONS = new Set(['cheerful','gentle','sad','angry','dramatic']);
 
@@ -428,10 +429,10 @@ export default function TTSPage() {
         setBgmItems(prev => [...prev, d.data]);
         setBgmFile(d.data.url);
       } else {
-        alert(d?.error || '上传失败');
+        showToast(d?.error || '上传失败', 'error');
       }
     } catch (e: any) {
-      alert('上传失败: ' + e.message);
+      showToast('上传失败: ' + e.message, 'error');
     } finally {
       setUploadingBgm(false);
     }
@@ -449,10 +450,10 @@ export default function TTSPage() {
         setBgmItems(prev => [...prev, d.data]);
         setBgmFile(d.data.url);
       } else {
-        alert(d?.error || "保存失败");
+        showToast(d?.error || '保存失败', 'error');
       }
     } catch (e: any) {
-      alert("保存失败: " + e.message);
+      showToast('保存失败: ' + e.message, 'error');
     } finally {
       setBgmSaving(false);
     }
@@ -473,10 +474,10 @@ export default function TTSPage() {
         setEditingId(null);
         setEditingName('');
       } else {
-        alert(d?.error || '重命名失败');
+        showToast(d?.error || '重命名失败', 'error');
       }
     } catch (e: any) {
-      alert('重命名失败: ' + e.message);
+      showToast('重命名失败: ' + e.message, 'error');
     }
   }
 
@@ -493,10 +494,10 @@ export default function TTSPage() {
         setClonedVoices(prev => prev.filter(v => v.voiceId !== voiceId));
         if (selectedCloneId === voiceId) setSelectedCloneId('');
       } else {
-        alert(d?.error || '删除失败');
+        showToast(d?.error || '删除失败', 'error');
       }
     } catch (e: any) {
-      alert('删除失败: ' + e.message);
+      showToast('删除失败: ' + e.message, 'error');
     }
   }
 

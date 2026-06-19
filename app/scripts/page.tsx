@@ -8,6 +8,7 @@ function ScriptsPageInner() {
   const [list, setList] = useState<any[]>([]);
   const [detail, setDetail] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   // 加载列表
@@ -15,7 +16,7 @@ function ScriptsPageInner() {
     if (!viewId) {
       fetch('/api/extract').then(r => r.json()).then(d => {
         if (d.success) setList(d.data);
-      });
+      }).catch(() => setError('加载失败，请检查网络'));
     }
   }, [viewId]);
 
@@ -26,7 +27,7 @@ function ScriptsPageInner() {
       fetch(`/api/extract?id=${viewId}`).then(r => r.json()).then(d => {
         if (d.success) setDetail(d.data);
         setLoading(false);
-      });
+      }).catch(() => { setLoading(false); setError('加载详情失败'); });
     }
   }, [viewId]);
 
@@ -37,7 +38,7 @@ function ScriptsPageInner() {
       .then(d => {
         if (d.success) setList(d.data);
         setLoading(false);
-      });
+      }).catch(() => { setLoading(false); setError('搜索失败'); });
   };
 
   const handleDelete = async (id: string) => {
@@ -63,6 +64,7 @@ function ScriptsPageInner() {
   // 详情视图
   if (viewId) {
     if (loading) return <div className="text-center py-20 text-gray-400">加载中...</div>;
+  if (error) return <div className="text-center py-20 text-red-400">{error} <button className="text-blue-600 ml-2" onClick={() => { setError(''); window.location.reload(); }}>重试</button></div>;
     if (!detail) return <div className="text-center py-20 text-gray-400">未找到该文案</div>;
 
     const meta = detail.metadata || {};
