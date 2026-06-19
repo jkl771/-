@@ -553,8 +553,8 @@ export default function TTSPage() {
         </header>
 
         {/* === 音源选择器（全宽） === */}
-        <div className="flex gap-3">
-          <button onClick={() => setTtsMode('edge')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'edge' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+        <div className="flex flex-wrap gap-3">
+          <button onClick={() => setTtsMode('edge')} className={'flex-1 min-w-[140px] p-3 sm:p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'edge' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-lg">🆓</span>
               <span className="font-bold text-sm text-gray-800">免费预设</span>
@@ -562,7 +562,7 @@ export default function TTSPage() {
             </div>
             <p className="text-xs text-gray-400">Edge TTS 预设音色，无需配置，完全免费</p>
           </button>
-          <button onClick={() => setTtsMode('cosy-clone')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'cosy-clone' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+          <button onClick={() => setTtsMode('cosy-clone')} className={'flex-1 min-w-[140px] p-3 sm:p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'cosy-clone' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-lg">🧬</span>
               <span className="font-bold text-sm text-gray-800">克隆音色</span>
@@ -570,7 +570,7 @@ export default function TTSPage() {
             </div>
             <p className="text-xs text-gray-400">阿里云 CosyVoice 克隆你的声音，需配置 DashScope Key</p>
           </button>
-          <button onClick={() => setTtsMode('elevenlabs')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'elevenlabs' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+          <button onClick={() => setTtsMode('elevenlabs')} className={'flex-1 min-w-[140px] p-3 sm:p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'elevenlabs' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-lg">🌍</span>
               <span className="font-bold text-sm text-gray-800">ElevenLabs</span>
@@ -578,7 +578,7 @@ export default function TTSPage() {
             </div>
             <p className="text-xs text-gray-400">海外顶级 TTS，需配置 ElevenLabs Key</p>
           </button>
-<button onClick={() => setTtsMode('fish')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'fish' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+<button onClick={() => setTtsMode('fish')} className={'flex-1 min-w-[140px] p-3 sm:p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'fish' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
   <div className="flex items-center gap-2 mb-1">
     <span className="text-lg">🐟</span>
     <span className="font-bold text-sm text-gray-800">Fish Audio</span>
@@ -586,7 +586,7 @@ export default function TTSPage() {
   </div>
   <p className="text-xs text-gray-400">国产高音质，支持声音克隆</p>
 </button>
-<button onClick={() => setTtsMode('minimax')} className={'flex-1 p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'minimax' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
+<button onClick={() => setTtsMode('minimax')} className={'flex-1 min-w-[140px] p-3 sm:p-4 rounded-2xl border-2 transition text-left ' + (ttsMode === 'minimax' ? 'border-violet-400 bg-violet-50 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300')}>
   <div className="flex items-center gap-2 mb-1">
     <span className="text-lg">🔊</span>
     <span className="font-bold text-sm text-gray-800">MiniMax</span>

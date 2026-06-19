@@ -190,7 +190,7 @@ function ScriptsPageInner() {
         </div>
       ) : (
         <div className="space-y-4">
-          {list.map((item: any) => {
+          {list.length === 0 ? (<div className='text-center text-gray-400 py-8'>暂无文案，去<a href='/extract' className='text-blue-600 hover:underline'>提取页面</a>添加</div>) : list.map((item: any) => {
             const meta = item.metadata || {};
             return (
               <div key={item.id} className="card hover:shadow-md transition-shadow group">

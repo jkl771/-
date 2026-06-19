@@ -80,6 +80,15 @@ details summary::-webkit-details-marker { display: none; }
 details summary::before { content: ''; display: inline-block; width: 1em; margin-right: 0.5em; transition: transform 0.2s; font-size: 0.7em; color: #9ca3af; }
 details[open] summary::before { transform: rotate(90deg); }
 
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes slide-in {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }

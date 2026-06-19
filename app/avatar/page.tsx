@@ -10,6 +10,8 @@ interface RetalkRecord {
   createdAt: string;
 }
 
+// metadata removed (client component) = { title: '数字人形象 - 视频智能体' };
+
 export default function AvatarPage() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
