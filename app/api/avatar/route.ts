@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import { createAvatar, listAvatars, updateAvatar } from '@/services/avatar';
 import { generateRetalkVideo, estimateRetalkCost, getFreeQuotaInfo, getRetalkApiKey } from '@/services/avatar-retalk';
@@ -47,7 +48,7 @@ function saveRetalkHistory(records: any[]) {
 }
     switch (action) {
       case 'create': {
-        const avatar = await createAvatar(body.config);
+        const avatar = await createAvatar(body.config as any);
         return NextResponse.json({ success: true, data: avatar });
       }
       case 'list': {
@@ -55,7 +56,7 @@ function saveRetalkHistory(records: any[]) {
         return NextResponse.json({ success: true, data: avatars });
       }
       case 'update': {
-        const updated = await updateAvatar(body.id, body.updates);
+        const updated = await updateAvatar(body.id as string, body.updates as any);
         if (!updated) return NextResponse.json({ error: '数字人不存在' }, { status: 404 });
         return NextResponse.json({ success: true, data: updated });
       }
@@ -85,10 +86,10 @@ function saveRetalkHistory(records: any[]) {
           try {
             const keyFile = require('path').join(process.cwd(), 'data', 'avatar-key.enc');
             const saltFile = require('path').join(process.cwd(), 'data', 'avatar-key.salt');
-            if (fs.existsSync(keyFile) && fs.existsSync(saltFile)) {
-              const enc = fs.readFileSync(keyFile, 'utf-8');
+            if (fsSync.existsSync(keyFile) && fsSync.existsSync(saltFile)) {
+              const enc = fsSync.readFileSync(keyFile, 'utf-8');
               const [ivB64, data] = enc.split(':');
-              const salt = fs.readFileSync(saltFile, 'utf-8');
+              const salt = fsSync.readFileSync(saltFile, 'utf-8');
               const dk = require('crypto').scryptSync(salt, 'avatar-key-v1', 32);
               const iv = Buffer.from(ivB64, 'base64');
               const decipher = require('crypto').createDecipheriv('aes-256-cbc', dk, iv);

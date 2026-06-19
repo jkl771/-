@@ -170,10 +170,10 @@ export default function TTSPage() {
   const [bgmFile, setBgmFile] = useState('⏸');
   const [bgmVolume, setBgmVolume] = useState(0.3);
   const [synthesizing, setSynthesizing] = useState(false);
-  const [synthResult, setSynthResult] = useState<{ audioUrl: string; duration?: number; providerUsed?: string; autoSwitch?: boolean; autoNote?: string } | null>(null);
+  const [synthResult, setSynthResult] = useState<{ audioUrl: string; duration?: number; providerUsed?: string; autoSwitch?: boolean; autoNote?: string; srtUrl?: string } | null>(null);
   const [synthError, setSynthError] = useState('⏸');
   const [probeResults, setProbeResults] = useState<Array<{ id: string; label: string; available: boolean; latencyMs?: number }>>([]);
-  const [probing, setProbing] = useState(false); const [showProbe, setShowProbe] = useState(false); const [bgmSearching, setBgmSearching] = useState(false); const [uploadingBgm, setUploadingBgm] = useState(false); const [bgmSaving, setBgmSaving] = useState(false); const [previewBgm, setPreviewBgm] = useState(null); const bgmAudioRef = useRef(null);
+  const [probing, setProbing] = useState(false); const [showProbe, setShowProbe] = useState(false); const [bgmSearching, setBgmSearching] = useState(false); const [uploadingBgm, setUploadingBgm] = useState(false); const [bgmSaving, setBgmSaving] = useState(false); const [previewBgm, setPreviewBgm] = useState<string | null>(null); const bgmAudioRef = useRef<HTMLAudioElement>(null);
   const [recommendedSource, setRecommendedSource] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -430,7 +430,7 @@ export default function TTSPage() {
       } else {
         alert(d?.error || '上传失败');
       }
-    } catch (e) {
+    } catch (e: any) {
       alert('上传失败: ' + e.message);
     } finally {
       setUploadingBgm(false);
@@ -455,6 +455,48 @@ export default function TTSPage() {
       alert("保存失败: " + e.message);
     } finally {
       setBgmSaving(false);
+    }
+  }
+
+
+  async function handleRename(voiceId: string) {
+    if (!editingName.trim()) return;
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'rename_voice', voiceId, name: editingName.trim() }),
+      });
+      const d = await res.json();
+      if (d?.success) {
+        setClonedVoices(prev => prev.map(v => v.voiceId === voiceId ? { ...v, name: editingName.trim() } : v));
+        setEditingId(null);
+        setEditingName('');
+      } else {
+        alert(d?.error || '重命名失败');
+      }
+    } catch (e: any) {
+      alert('重命名失败: ' + e.message);
+    }
+  }
+
+  async function handleDelete(voiceId: string) {
+    if (!confirm('确定删除此音色？')) return;
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete_voice', voiceId }),
+      });
+      const d = await res.json();
+      if (d?.success) {
+        setClonedVoices(prev => prev.filter(v => v.voiceId !== voiceId));
+        if (selectedCloneId === voiceId) setSelectedCloneId('');
+      } else {
+        alert(d?.error || '删除失败');
+      }
+    } catch (e: any) {
+      alert('删除失败: ' + e.message);
     }
   }
 

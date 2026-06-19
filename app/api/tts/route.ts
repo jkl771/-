@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
         if (source === 'edge') {
           const edgeVoiceKey = String(body.voice || body.voiceId || 'xiaoxiao'); const edgeEmotionRaw = String(body.emotion || 'neutral'); const edgeEmotion = edgeEmotionRaw; try {
             result = await synthesizeEdge({ text, voiceKey: edgeVoiceKey, speed: Number(body.speed) || 1, pitch: Number(body.pitch) || 0, emotion: edgeEmotion, bgmFile: bgmFilePath, bgmVolume: Number(body.bgmVolume) || 0.15 });
-          } catch (edgeErr) {
+          } catch (edgeErr: any) {
             console.warn('[TTS] Edge TTS failed, trying fallback:', edgeErr.message);
             try {
               const fbKey = userApiKey || dashscopeKey.get();
