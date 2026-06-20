@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { saveVoiceConfig, listVoiceConfigs } from '@/services/tts';
@@ -238,7 +238,7 @@ export async function POST(req: NextRequest) {
             const srtPath = audioFullPath2.replace(/\.[^.]+$/, '.srt');
             require('fs').writeFileSync(srtPath, srtContent, 'utf-8');
             srtUrl = result.audioUrl.replace(/\.[^.]+$/, '.srt');
-          } catch {}
+          } catch (e: any) { console.warn('[TTS] Error:', e.message); }
         }
         return NextResponse.json({ success: true, data: { ...result, providerUsed: source, autoSwitch, autoNote, srtUrl } });
       } catch (e: any) {

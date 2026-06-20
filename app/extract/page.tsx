@@ -1,6 +1,5 @@
-﻿'use client';
+'use client';
 import { useState } from 'react';
-
 export default function ExtractPage() {
   const [shareText, setShareText] = useState('');
   const [url, setUrl] = useState('');
@@ -11,7 +10,6 @@ export default function ExtractPage() {
   const [step, setStep] = useState('');
   const [error, setError] = useState('');
   const [duplicate, setDuplicate] = useState<any>(null);
-
   // 真正执行提取的函数
   const handleExtractForce = async () => {
     setLoading(true);
@@ -23,7 +21,6 @@ export default function ExtractPage() {
       if (mode === 'share') { body = { mode: 'share', shareText }; setStep('正在处理...'); }
       else if (mode === 'url') { body = { mode: 'url', url }; setStep('正在处理...'); }
       else { body = { mode: 'text', text }; setStep('正在分析文本...'); }
-
       const resp = await fetch('/api/extract', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const data = await resp.json();
       if (data.success) { setResult(data.data); setStep(''); }
@@ -31,7 +28,6 @@ export default function ExtractPage() {
     } catch (e: any) { setError(e.message); setStep(''); }
     finally { setLoading(false); }
   };
-
   // 先检测重复，再提取
   const handleExtract = async () => {
     setLoading(true);
@@ -56,18 +52,14 @@ export default function ExtractPage() {
       await handleExtractForce();
     }
   };
-
   const canSubmit = (mode === 'share' && shareText.trim()) || (mode === 'url' && url.trim()) || (mode === 'text' && text.trim());
-
   const sourceLabel: Record<string, string> = {
     funasr: '🎙 语音识别 (FunASR)', description: '📝 视频描述', pasted: '📋 手动粘贴',
   };
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-2">🔗 链接文案提取</h1>
       <p className="text-gray-500 mb-6 text-sm">粘贴分享链接 → 自动下载视频 → 提取音频 → 语音转文字（免费，无需 API Key）</p>
-
       {/* 重复检测提示 */}
       {duplicate && (
         <div className="card border-yellow-300 bg-yellow-50 mb-6">
@@ -79,14 +71,12 @@ export default function ExtractPage() {
           </div>
         </div>
       )}
-
       <div className="card mb-6">
         <div className="flex gap-3 mb-5">
           <button onClick={() => setMode('share')} className={mode === 'share' ? 'btn-primary' : 'btn-secondary'}>📋 粘贴分享文本</button>
           <button onClick={() => setMode('url')} className={mode === 'url' ? 'btn-primary' : 'btn-secondary'}>🔗 输入链接</button>
           <button onClick={() => setMode('text')} className={mode === 'text' ? 'btn-primary' : 'btn-secondary'}>📝 粘贴纯文案</button>
         </div>
-
         {mode === 'share' && (
           <div>
             <label className="label">粘贴抖音/快手分享内容</label>
@@ -107,14 +97,12 @@ export default function ExtractPage() {
             <textarea className="input-field h-40 mb-4" placeholder="将文案内容直接粘贴到这里..." value={text} onChange={(e) => setText(e.target.value)} />
           </div>
         )}
-
         <div className="flex gap-3">
           <button onClick={handleExtract} disabled={loading || !canSubmit} className="btn-primary">
             {loading ? '⏳ 处理中...' : '🚀 开始提取'}
           </button>
           <a href="/scripts" className="btn-secondary">📋 文案库</a>
         </div>
-
         {loading && (
           <div className="mt-4 bg-blue-50 rounded-lg p-4 text-sm text-blue-700">
             <div className="flex items-center gap-2 mb-3">
@@ -143,20 +131,17 @@ export default function ExtractPage() {
           </div>
         )}
       </div>
-
       {error && (
         <div className="card border-red-200 bg-red-50 mb-6">
           <p className="text-red-600 font-medium">❌ {error}</p>
           <p className="text-sm text-gray-500 mt-2">可尝试「📝 粘贴纯文案」模式手动输入文案</p>
         </div>
       )}
-
       {result && (
         <div className="space-y-6">
           <div className="card border-green-200 bg-green-50">
             <p className="text-green-700 font-medium">✅ 提取成功！文案已保存到文案库</p>
           </div>
-
           <div className="card">
             <h2 className="text-lg font-semibold mb-3">📊 提取结果</h2>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
@@ -188,7 +173,6 @@ export default function ExtractPage() {
               </div>
             </div>
           </div>
-
           <div className="card">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold">📄 完整文案</h3>
@@ -196,7 +180,6 @@ export default function ExtractPage() {
             </div>
             <div className="bg-gray-50 rounded-lg p-4 text-sm max-h-96 overflow-y-auto whitespace-pre-wrap leading-relaxed">{result.rawText}</div>
           </div>
-
           {result.segments?.length > 0 && (
             <div className="card">
               <h3 className="font-semibold mb-3">⏱ 时间轴（{result.segments.length} 段）</h3>
@@ -212,7 +195,6 @@ export default function ExtractPage() {
               </div>
             </div>
           )}
-
           <div className="card">
             <h3 className="font-semibold mb-3">下一步</h3>
             <div className="flex flex-wrap gap-3">

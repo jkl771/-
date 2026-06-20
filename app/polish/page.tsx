@@ -1,7 +1,6 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-
 function ScoreBar({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="flex items-center gap-2 text-xs py-0.5">
@@ -13,7 +12,6 @@ function ScoreBar({ label, value, color }: { label: string; value: number; color
     </div>
   );
 }
-
 function ScorePanel({ score, title, compact }: { score: any; title: string; compact?: boolean }) {
   if (!score) return null;
   if (compact) {
@@ -62,7 +60,6 @@ function ScorePanel({ score, title, compact }: { score: any; title: string; comp
     </div>
   );
 }
-
 function PolishPageInner() {
   const searchParams = useSearchParams();
   const fromId = searchParams.get('from');
@@ -79,7 +76,6 @@ function PolishPageInner() {
   const [isEditing, setIsEditing] = useState(false);
   const [scoringEdit, setScoringEdit] = useState(false);
   const [tokenUsage, setTokenUsage] = useState<any>(null);
-
   const [aiEnabled, setAiEnabled] = useState(false);
   const [aiTesting, setAiTesting] = useState(false);
   const [aiMsg, setAiMsg] = useState('');
@@ -91,7 +87,6 @@ function PolishPageInner() {
   const [llmMsg, setLlmMsg] = useState('');
   const [llmConnected, setLlmConnected] = useState(false);
   const [initialized, setInitialized] = useState(false);
-
   useEffect(() => {
     setLlmBaseUrl(localStorage.getItem('llm_base_url') || '');
     setLlmApiKey(localStorage.getItem('llm_api_key') || '');
@@ -99,7 +94,6 @@ function PolishPageInner() {
     if (localStorage.getItem('llm_connected') === 'true') { setLlmConnected(true); setLlmStatus('ok'); }
     setInitialized(true);
   }, []);
-
   const handleAiToggle = async () => {
     if (!aiEnabled) {
       setAiTesting(true); setAiMsg('');
@@ -117,7 +111,6 @@ function PolishPageInner() {
       setAiEnabled(false); setAiMsg('');
     }
   };
-
   const saveLLMConfig = () => {
     localStorage.setItem('llm_base_url', llmBaseUrl);
     localStorage.setItem('llm_api_key', llmApiKey);
@@ -141,19 +134,14 @@ function PolishPageInner() {
       else { setLlmStatus('fail'); setLlmConnected(false); setLlmMsg('❌ HTTP ' + res.status); }
     } catch (e: any) { setLlmStatus('fail'); setLlmConnected(false); setLlmMsg('❌ ' + (e.name === 'AbortError' ? '超时' : e.message)); }
   };
-
   const clearLLMConfig = () => {
     localStorage.removeItem('llm_base_url'); localStorage.removeItem('llm_api_key');
     localStorage.removeItem('llm_model'); localStorage.removeItem('llm_connected');
     setLlmBaseUrl(''); setLlmApiKey(''); setLlmModel('');
     setLlmConnected(false); setLlmStatus('idle'); setLlmMsg('🗑️ 配置已清除');
   };
-
-
   useEffect(() => { if (fromId) fetch(`/api/extract?id=${fromId}`).then(r=>r.json()).then(d=>{ if(d.success&&d.data?.rawText) setText(d.data.rawText); }).catch(()=>{}); }, [fromId]);
-
   const getLLMConfig = () => (!llmConnected||!llmApiKey||!llmBaseUrl) ? undefined : { baseUrl: llmBaseUrl, apiKey: llmApiKey, model: llmModel || 'glm-4-flash' };
-
   const handlePolish = async () => {
     setLoading(true); setError(''); setAddMsg(''); setIsEditing(false); setTokenUsage(null);
     try {
@@ -166,9 +154,7 @@ function PolishPageInner() {
     } catch (e: any) { setError(e.message); }
     finally { setLoading(false); }
   };
-
   const handleEditChange = (newText: string) => { setEditText(newText); setIsEditing(newText !== result?.polished); };
-
   const handleSubmitScore = async () => {
     setScoringEdit(true);
     try {
@@ -177,16 +163,12 @@ function PolishPageInner() {
       if (d.success && d.data) { setEditScore(d.data.polishedScore); setEditCompliance(d.data.complianceReport); setIsEditing(false); }
     } catch {} finally { setScoringEdit(false); }
   };
-
   const handleAddToLibrary = async (t: string) => {
     setAddMsg('');
     try { const r = await fetch('/api/materials-library',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'add',texts:[t]})}); const d=await r.json(); setAddMsg(d.success?'✅ 已加入候选区':'❌ '+(d.error||'失败')); } catch(e:any){ setAddMsg('❌ '+e.message); }
   };
-
   const handleUseVersion = (v: string, vs: any) => { setEditText(v); setEditScore(vs); setEditCompliance(null); setIsEditing(false); };
-
   if (!initialized) return <div className="text-center py-20 text-gray-400">加载中...</div>;
-
   return (
     <div className="space-y-5">
       {/* 标题 */}
@@ -194,7 +176,6 @@ function PolishPageInner() {
         <h1 className="text-xl font-bold text-gray-800">✨ 文案润色</h1>
         <a href="/materials-library" className="text-sm text-blue-500 hover:text-blue-700 transition-colors">📚 素材库</a>
       </div>
-
       {/* 输入区 */}
       <div className="card">
         <textarea className="w-full h-36 p-3 rounded-xl border border-gray-200 bg-gray-50 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white resize-y transition-colors" placeholder="粘贴需要润色的文案..." value={text} onChange={e => setText(e.target.value)} />
@@ -214,7 +195,6 @@ function PolishPageInner() {
           </button>
           {tokenUsage && <span className="text-xs text-gray-400 ml-1 shrink-0">🪙 {tokenUsage.total_tokens}t</span>}
         </div>
-
         {/* LLM 配置（折叠） */}
         {/* AI 润色开关 */}
         <div className="mt-3 pt-3 border-t border-gray-100">
@@ -252,10 +232,8 @@ function PolishPageInner() {
           )}
         </div>
       </div>
-
       {error && <div className="card-compact border-red-200 bg-red-50"><p className="text-red-600 text-sm">❌ {error}</p></div>}
       {addMsg && <div className="card-compact border-blue-200 bg-blue-50"><p className="text-blue-600 text-sm">{addMsg}</p></div>}
-
       {result && (
         <>
           {/* 合规报告 + 评分详情 合并 */}
@@ -307,7 +285,6 @@ function PolishPageInner() {
               </div>
             )}
           </div>
-
           {/* 润色结果 */}
           <div className="card">
             <div className="flex items-center justify-between mb-2">
@@ -327,7 +304,6 @@ function PolishPageInner() {
               <button onClick={() => handleAddToLibrary(text)} className="btn-secondary text-xs">📚 原文入库</button>
             </div>
           </div>
-
           {/* 多版本 */}
           <div className="card-compact">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">🔄 多版本改写（{result.versions.length}）</h2>
@@ -359,7 +335,6 @@ function PolishPageInner() {
     </div>
   );
 }
-
 export default function PolishPage() {
   return (
     <Suspense fallback={<div className="text-center py-20 text-gray-400">加载中...</div>}>

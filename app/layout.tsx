@@ -1,13 +1,18 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import NavLink from './components/NavLink';
 import ToastContainer from './components/Toast';
 import './globals.css';
-
 export const metadata: Metadata = {
-  title: '视频智能体',
+  title: { default: '视频智能体', template: '%s - 视频智能体' },
   description: '一站式短视频自动化工作台',
+  openGraph: {
+    title: '视频智能体',
+    description: '一站式短视频自动化工作台',
+    siteName: '视频智能体',
+    type: 'website',
+    locale: 'zh_CN',
+  },
 };
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">

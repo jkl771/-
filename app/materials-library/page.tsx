@@ -1,6 +1,5 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
-
 export default function MaterialsLibraryPage() {
   const [tab, setTab] = useState<'add' | 'candidates' | 'approved' | 'crawler'>('add');
   const [addText, setAddText] = useState('');
@@ -9,9 +8,9 @@ export default function MaterialsLibraryPage() {
   const [approved, setApproved] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [crawler, setCrawler] = useState<any>(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
-
   const loadAll = async () => {
     try {
       const [c, a, s, cr] = await Promise.all([
@@ -24,11 +23,9 @@ export default function MaterialsLibraryPage() {
       if (a.success) setApproved(a.data);
       if (s.success) setStats(s.data);
       if (cr.success) setCrawler(cr.data);
-    } catch {}
+    } catch (e: any) { setError(e?.message || '操作失败'); }
   };
-
   useEffect(() => { loadAll(); }, []);
-
   const handleAdd = async () => {
     if (!addText.trim()) return;
     setLoading(true);
@@ -44,7 +41,6 @@ export default function MaterialsLibraryPage() {
     } catch (e: any) { setMsg('❌ ' + e.message); }
     finally { setLoading(false); }
   };
-
   const handleBatchImport = async () => {
     if (!batchText.trim()) return;
     setLoading(true);
@@ -60,7 +56,6 @@ export default function MaterialsLibraryPage() {
     } catch (e: any) { setMsg('❌ ' + e.message); }
     finally { setLoading(false); }
   };
-
   const handleApprove = async (text: string) => {
     await fetch('/api/materials-library', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -68,7 +63,6 @@ export default function MaterialsLibraryPage() {
     });
     loadAll();
   };
-
   const handleApproveAll = async () => {
     await fetch('/api/materials-library', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -77,7 +71,6 @@ export default function MaterialsLibraryPage() {
     setMsg('✅ 全部批准入库');
     loadAll();
   };
-
   const handleRemove = async (text: string) => {
     await fetch('/api/materials-library', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -85,7 +78,6 @@ export default function MaterialsLibraryPage() {
     });
     loadAll();
   };
-
   const handleCrawlerToggle = async () => {
     if (!crawler?.enabled) {
       if (!confirm('⚠️ 爬虫有风险，请避免多次使用。确认开启？')) return;
@@ -96,7 +88,6 @@ export default function MaterialsLibraryPage() {
     });
     loadAll();
   };
-
   const handleCrawlerTest = async (sourceId: string) => {
     setMsg('测试中...');
     const res = await fetch('/api/materials-library', {
@@ -107,7 +98,6 @@ export default function MaterialsLibraryPage() {
     setMsg(d.data?.message || '测试完成');
     loadAll();
   };
-
   const handleCrawlerFetch = async (sourceId: string) => {
     setMsg('抓取中...');
     const res = await fetch('/api/materials-library', {
@@ -118,13 +108,10 @@ export default function MaterialsLibraryPage() {
     setMsg('抓取 ' + (d.data?.success || 0) + ' 条');
     loadAll();
   };
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">📚 素材库管理</h1>
-
       {msg && <div className="mb-4 p-3 rounded-lg bg-blue-50 text-blue-800 text-sm">{msg}</div>}
-
       {/* 统计概览 */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -134,7 +121,6 @@ export default function MaterialsLibraryPage() {
           <div className="card text-center"><div className="text-2xl font-bold">{crawler?.sources?.length || 0}</div><div className="text-sm text-gray-500">爬虫源</div></div>
         </div>
       )}
-
       {/* Tab 切换 */}
       <div className="flex gap-2 mb-6">
         {([['add', '➕ 添加素材'], ['candidates', '📋 候选区'], ['approved', '✅ 已入库'], ['crawler', '🕷️ 爬虫管理']] as const).map(([key, label]) => (
@@ -143,7 +129,6 @@ export default function MaterialsLibraryPage() {
           </button>
         ))}
       </div>
-
       {/* 添加素材 */}
       {tab === 'add' && (
         <div className="space-y-6">
@@ -163,7 +148,6 @@ export default function MaterialsLibraryPage() {
           </div>
         </div>
       )}
-
       {/* 候选区 */}
       {tab === 'candidates' && (
         <div className="space-y-4">
@@ -194,8 +178,6 @@ export default function MaterialsLibraryPage() {
           )}
         </div>
       )}
-
-
       {/* ??????????? */}
       {tab === 'approved' && (() => {
         const sg: Record<string, {l:string;i:string;c:string;b:string}> = {
@@ -244,7 +226,6 @@ export default function MaterialsLibraryPage() {
           </div>
         );
       })()}
-
       {/* 爬虫管理 */}
       {tab === 'crawler' && (
         <div className="space-y-4">
@@ -264,7 +245,6 @@ export default function MaterialsLibraryPage() {
               </div>
             )}
           </div>
-
           <h3 className="font-semibold">内置源 ({crawler?.sources?.length || 0})</h3>
           {crawler?.sources?.map((s: any) => (
             <div key={s.id} className="card">

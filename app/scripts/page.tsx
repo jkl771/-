@@ -1,7 +1,6 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-
 function ScriptsPageInner() {
   const searchParams = useSearchParams();
   const viewId = searchParams.get('id');
@@ -10,7 +9,6 @@ function ScriptsPageInner() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-
   // 加载列表
   useEffect(() => {
     if (!viewId) {
@@ -19,7 +17,6 @@ function ScriptsPageInner() {
       }).catch(() => setError('加载失败，请检查网络'));
     }
   }, [viewId]);
-
   // 加载详情
   useEffect(() => {
     if (viewId) {
@@ -30,7 +27,6 @@ function ScriptsPageInner() {
       }).catch(() => { setLoading(false); setError('加载详情失败'); });
     }
   }, [viewId]);
-
   const handleSearch = () => {
     setLoading(true);
     fetch(`/api/extract?q=${encodeURIComponent(searchQuery)}`)
@@ -40,7 +36,6 @@ function ScriptsPageInner() {
         setLoading(false);
       }).catch(() => { setLoading(false); setError('搜索失败'); });
   };
-
   const handleDelete = async (id: string) => {
     if (!confirm('确定删除该文案？删除后不可恢复。')) return;
     const resp = await fetch('/api/extract', {
@@ -53,20 +48,17 @@ function ScriptsPageInner() {
       setList(prev => prev.filter(item => item.id !== id));
     }
   };
-
   const sourceLabel: Record<string, string> = {
     funasr: '🎙 语音识别',
     whisper_api: '🎙 Whisper API',
     description: '📝 视频描述',
     pasted: '📋 手动粘贴',
   };
-
   // 详情视图
   if (viewId) {
     if (loading) return <div className="text-center py-20 text-gray-400">加载中...</div>;
   if (error) return <div className="text-center py-20 text-red-400">{error} <button className="text-blue-600 ml-2" onClick={() => { setError(''); window.location.reload(); }}>重试</button></div>;
     if (!detail) return <div className="text-center py-20 text-gray-400">未找到该文案</div>;
-
     const meta = detail.metadata || {};
     return (
       <div>
@@ -74,7 +66,6 @@ function ScriptsPageInner() {
           <a href="/scripts" className="text-blue-600 hover:underline text-sm">← 返回列表</a>
           <h1 className="text-2xl font-bold">📊 文案详情</h1>
         </div>
-
         <div className="card mb-6">
           <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
             <div className="bg-gray-50 rounded-lg p-3">
@@ -112,7 +103,6 @@ function ScriptsPageInner() {
             </div>
           )}
         </div>
-
         <div className="card mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="font-semibold">📄 完整文案</h2>
@@ -124,7 +114,6 @@ function ScriptsPageInner() {
             {detail.rawText}
           </div>
         </div>
-
         {detail.segments?.length > 0 && (
           <div className="card mb-6">
             <h2 className="font-semibold mb-3">⏱ 时间轴（{detail.segments.length} 段）</h2>
@@ -147,7 +136,6 @@ function ScriptsPageInner() {
             </div>
           </div>
         )}
-
         <div className="card">
           <h2 className="font-semibold mb-3">下一步操作</h2>
           <div className="flex flex-wrap gap-3">
@@ -160,7 +148,6 @@ function ScriptsPageInner() {
       </div>
     );
   }
-
   // 列表视图
   return (
     <div>
@@ -168,7 +155,6 @@ function ScriptsPageInner() {
         <h1 className="text-2xl font-bold">📋 文案库</h1>
         <a href="/extract" className="btn-primary text-sm">+ 提取新文案</a>
       </div>
-
       {/* 搜索框 */}
       <div className="flex gap-2 mb-6">
         <input
@@ -181,7 +167,6 @@ function ScriptsPageInner() {
         />
         <button onClick={handleSearch} className="btn-primary text-sm">🔍 搜索</button>
       </div>
-
       {list.length === 0 ? (
         <div className="card text-center py-20 text-gray-400">
           <p className="text-4xl mb-3">📭</p>
@@ -224,7 +209,6 @@ function ScriptsPageInner() {
     </div>
   );
 }
-
 export default function ScriptsPage() {
   return (
     <Suspense fallback={<div className="text-center py-20 text-gray-400">加载中...</div>}>

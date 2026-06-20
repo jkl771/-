@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { polishContent } from '@/services/polish';
 import { getDecryptedLLMConfig } from '@/services/llm-config';
 import { loadMaterialsConfig, saveMaterialsConfig } from '@/config/polish-materials';

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createProject, addTrack, setSubtitles, autoGenerateSubtitles, calibrateSubtitles, setAudioMix, exportSrt, renderVideo } from '@/services/video';
 
 export async function POST(req: NextRequest) {

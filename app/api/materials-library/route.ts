@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { classifyText } from '@/services/material-classifier';
 import {
   getCandidates, addCandidates, removeCandidate, approveCandidate, approveAll,

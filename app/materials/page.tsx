@@ -8,6 +8,7 @@ function MaterialsInner() {
   const viewId = searchParams.get("id");
   const [list, setList] = useState<any[]>([]);
   const [detail, setDetail] = useState<any>(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [folderMsg, setFolderMsg] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,6 +86,7 @@ function MaterialsInner() {
     return `${Math.floor(sec / 60)}分${Math.floor(sec % 60)}秒`;
   };
 
+  if (error) return <div className='text-center py-20 text-red-400'>{error} <button className='text-blue-600 ml-2' onClick={() => { setError(''); window.location.reload(); }}>重试</button></div>;
   if (loading) return <div className="text-center py-20 text-gray-400">加载中...</div>;
 
   if (viewId && detail) {

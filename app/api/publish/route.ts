@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createPublishTask, executePublish, listPublishTasks, retryPublish } from '@/services/publish';
 
 export async function POST(req: NextRequest) {

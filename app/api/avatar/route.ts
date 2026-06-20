@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import fsSync from 'fs';
 import path from 'path';
@@ -96,7 +96,7 @@ function saveRetalkHistory(records: any[]) {
               const key = decipher.update(data, 'base64', 'utf-8') + decipher.final('utf-8');
               masked = key.slice(0,6) + '****' + key.slice(-4);
             }
-          } catch {}
+          } catch (e: any) { console.warn('[Avatar] Error:', e.message); }
           return NextResponse.json({ success: true, data: { configured: !!hasKey, masked } });
         }
         if (subAction === 'save') {
@@ -150,5 +150,4 @@ function saveRetalkHistory(records: any[]) {
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
-
 

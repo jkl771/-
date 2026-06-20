@@ -1,6 +1,5 @@
-﻿'use client';
+'use client';
 import { useState } from 'react';
-
 export default function EditorPage() {
   const [projectName, setProjectName] = useState('我的视频项目');
   const [project, setProject] = useState<any>(null);
@@ -10,7 +9,6 @@ export default function EditorPage() {
   const [calibrateOffset, setCalibrateOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const api = async (action: string, body: any = {}) => {
     setLoading(true);
     setError('');
@@ -33,7 +31,6 @@ export default function EditorPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
@@ -41,7 +38,6 @@ export default function EditorPage() {
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">🎬 视频剪辑与字幕</h1>
           <p className="text-sm text-gray-500 mt-2">创建工程、自动生成字幕、混音设置、渲染导出</p>
         </header>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 工程管理 */}
           <div className="card space-y-4">
@@ -60,7 +56,6 @@ export default function EditorPage() {
               </div>
             )}
           </div>
-
           {/* 字幕设置 */}
           <div className="card space-y-4">
             <h2 className="text-lg font-bold text-gray-800">📝 字幕设置</h2>
@@ -73,7 +68,6 @@ export default function EditorPage() {
             />
             <label className="text-xs text-gray-500">总时长（秒）</label>
             <input type="number" className="input-field" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} />
-
             <button
               onClick={() => api('auto_subtitles', { projectId: project?.id, text: subtitleText, totalDuration: duration })}
               disabled={!project || !subtitleText || loading}
@@ -81,7 +75,6 @@ export default function EditorPage() {
             >
               自动生成字幕
             </button>
-
             <div className="border-t pt-3 mt-3 space-y-2">
               <label className="text-xs text-gray-500">校准偏移（秒，正=延后，负=提前）</label>
               <div className="flex gap-2">
@@ -95,7 +88,6 @@ export default function EditorPage() {
                 </button>
               </div>
             </div>
-
             <button
               onClick={() => api('export_srt', { projectId: project?.id })}
               disabled={!project || loading}
@@ -104,7 +96,6 @@ export default function EditorPage() {
               导出 SRT 字幕
             </button>
           </div>
-
           {/* 音频混音 */}
           <div className="card space-y-4">
             <h2 className="text-lg font-bold text-gray-800">🔊 音频混音</h2>
@@ -120,7 +111,6 @@ export default function EditorPage() {
             </div>
             <label className="text-xs text-gray-500">BGM 链接</label>
             <input className="input-field" placeholder="https://..." value={audioMix.bgmUrl} onChange={(e) => setAudioMix({ ...audioMix, bgmUrl: e.target.value })} />
-
             <button
               onClick={() => api('audio_mix', { projectId: project?.id, mix: audioMix })}
               disabled={!project || loading}
@@ -128,7 +118,6 @@ export default function EditorPage() {
             >
               应用混音设置
             </button>
-
             <button
               onClick={() => api('render', { projectId: project?.id })}
               disabled={!project || project?.tracks?.length === 0 || loading}
@@ -138,13 +127,11 @@ export default function EditorPage() {
             </button>
           </div>
         </div>
-
         {error && (
           <div className="card border-l-4 border-red-500 p-4">
             <span className="text-sm text-red-600">❌ {error}</span>
           </div>
         )}
-
         {/* 字幕预览 */}
         {project?.subtitles?.length > 0 && (
           <div className="card space-y-4">
@@ -173,7 +160,6 @@ export default function EditorPage() {
             </div>
           </div>
         )}
-
         <footer className="text-center text-xs text-gray-400 pb-6">视频剪辑工作台 · 字幕生成 · 混音设置 · 渲染导出</footer>
       </div>
     </div>

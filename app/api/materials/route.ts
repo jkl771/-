@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs';
@@ -21,7 +21,7 @@ function runPyScript(code: string): unknown {
       if (t.startsWith('{') || t.startsWith('[') || t === 'null') return JSON.parse(t);
     }
     return null;
-  } finally { try { fs.unlinkSync(tmpPy); } catch {} }
+  } finally { try { fs.unlinkSync(tmpPy); } catch (e: any) { console.warn('[Materials] Error:', e.message); } }
 }
 
 export async function GET(req: NextRequest) {
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'delete_by_material', materialId: body.id }),
         });
-      } catch {}
+      } catch (e: any) { console.warn('[Materials] Error:', e.message); }
       // 删除素材文件夹
       fs.rmSync(matDir, { recursive: true, force: true });
       return NextResponse.json({ success: true });
