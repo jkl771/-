@@ -106,7 +106,7 @@ export default function CoverPage() {
             <h2 className="text-lg font-semibold mb-4">标题候选</h2>
             <div className="space-y-2">
               {result.titles.map((t, i) => (
-                <div key={i} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                <div key={i} className="flex items-center justify-between bg-gray-50 dark:bg-slate-900 dark:bg-gray-800 rounded-lg p-3">
                   <span className="flex-1 mr-3">{t}</span>
                   <button className="btn-secondary text-sm" onClick={() => handleCopy(t)}>
                     {copied === t ? '已复制 ✓' : '复制'}

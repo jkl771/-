@@ -99,18 +99,18 @@ export default function AvatarPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <div className="max-w-3xl mx-auto px-6 py-10 space-y-8">
         <header>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">数字人口型视频</h1>
-          <p className="text-sm text-gray-500 mt-2">上传你的人物视频 + 人声音频，AI 自动生成口型匹配的新视频</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">数字人口型视频</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">上传你的人物视频 + 人声音频，AI 自动生成口型匹配的新视频</p>
         </header>
 
         <div className="card space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-800">阿里云 API Key</h2>
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200">阿里云 API Key</h2>
             <button className="text-sm text-blue-600 hover:underline" onClick={() => setShowKey(!showKey)}>{showKey ? '收起' : '配置'}</button>
           </div>
           {showKey && (
             <div className="space-y-3">
-              <p className="text-xs text-gray-500">需要阿里云 DashScope API Key，一个 Key 可用于 TTS + 数字人。<a href="https://bailian.console.aliyun.com/cn-beijing?tab=globalset#/efm/api_key" target="_blank" className="text-blue-600 hover:underline ml-1">点击获取</a></p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">需要阿里云 DashScope API Key，一个 Key 可用于 TTS + 数字人。<a href="https://bailian.console.aliyun.com/cn-beijing?tab=globalset#/efm/api_key" target="_blank" className="text-blue-600 hover:underline ml-1">点击获取</a></p>
               <div className="flex gap-2">
                 <input type="password" className="input-field flex-1" placeholder="输入你的 DashScope API Key" value={apiKeyInput} onChange={(e) => setApiKeyInput(e.target.value)} />
                 <button className="btn-secondary text-sm" onClick={handleSaveKey}>保存</button>
@@ -122,33 +122,33 @@ export default function AvatarPage() {
           )}
         </div>
 
-        <div className="card bg-amber-50/60 border-amber-200 space-y-2">
-          <h3 className="font-bold text-gray-800">价格说明</h3>
-          <div className="text-sm text-gray-600 space-y-1">
+        <div className="card bg-amber-50 dark:bg-amber-900/30/60 border-amber-200 space-y-2">
+          <h3 className="font-bold text-gray-800 dark:text-gray-200">价格说明</h3>
+          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <p>单价：<span className="font-mono font-bold">{retalkQuota?.pricePerSec ?? 0.08} 元/秒</span></p>
             <p>免费额度：<span className="font-mono font-bold">{retalkQuota?.totalSec ?? 1800} 秒（30 分钟）</span></p>
             <p>1 分钟视频 ≈ <span className="font-mono font-bold">4.8 元</span> | 5 分钟视频 ≈ <span className="font-mono font-bold">24 元</span></p>
           </div>
         </div>
 
-        {retalkQuota && <p className="text-xs text-amber-700 bg-amber-50 rounded-md px-3 py-1.5">数字人免费额度：{retalkQuota.totalSec}s，单价 {retalkQuota.pricePerSec} 元/秒</p>}
-        {dashQuotaOk === false && <p className="text-xs text-red-700 bg-red-50 rounded-md px-3 py-1.5">阿里云额度提醒：{dashQuotaMsg || '额度不足，请充值后再试'}</p>}
+        {retalkQuota && <p className="text-xs text-amber-700 bg-amber-50 dark:bg-amber-900/30 rounded-md px-3 py-1.5">数字人免费额度：{retalkQuota.totalSec}s，单价 {retalkQuota.pricePerSec} 元/秒</p>}
+        {dashQuotaOk === false && <p className="text-xs text-red-700 bg-red-50 dark:bg-red-900/30 rounded-md px-3 py-1.5">阿里云额度提醒：{dashQuotaMsg || '额度不足，请充值后再试'}</p>}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="card space-y-3">
-            <h3 className="font-bold text-gray-800">人物视频</h3>
-            <p className="text-xs text-gray-500">上传正面、清晰的人物说话视频</p>
-            <label className="block w-full px-5 py-8 rounded-xl border-2 border-dashed border-blue-200 text-center text-sm text-gray-500 cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all">
-              {videoFile ? <span className="text-gray-700 font-medium">{videoFile.name}</span> : '点击选择视频文件'}
+            <h3 className="font-bold text-gray-800 dark:text-gray-200">人物视频</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">上传正面、清晰的人物说话视频</p>
+            <label className="block w-full px-5 py-8 rounded-xl border-2 border-dashed border-blue-200 text-center text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:bg-blue-900/30/50 transition-all">
+              {videoFile ? <span className="text-gray-700 dark:text-gray-300 font-medium">{videoFile.name}</span> : '点击选择视频文件'}
               <input type="file" accept="video/*" className="hidden" onChange={(e) => setVideoFile(e.target.files?.[0] || null)} />
             </label>
             {videoFile && <button className="text-xs text-red-400 hover:text-red-600" onClick={() => setVideoFile(null)}>移除</button>}
           </div>
           <div className="card space-y-3">
-            <h3 className="font-bold text-gray-800">人声音频</h3>
-            <p className="text-xs text-gray-500">上传你想要的说话音频（或从 TTS 页生成）</p>
-            <label className="block w-full px-5 py-8 rounded-xl border-2 border-dashed border-purple-200 text-center text-sm text-gray-500 cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition-all">
-              {audioFile ? <span className="text-gray-700 font-medium">{audioFile.name}</span> : '点击选择音频文件'}
+            <h3 className="font-bold text-gray-800 dark:text-gray-200">人声音频</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">上传你想要的说话音频（或从 TTS 页生成）</p>
+            <label className="block w-full px-5 py-8 rounded-xl border-2 border-dashed border-purple-200 text-center text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition-all">
+              {audioFile ? <span className="text-gray-700 dark:text-gray-300 font-medium">{audioFile.name}</span> : '点击选择音频文件'}
               <input type="file" accept="audio/*" className="hidden" onChange={(e) => setAudioFile(e.target.files?.[0] || null)} />
             </label>
             {audioFile && <button className="text-xs text-red-400 hover:text-red-600" onClick={() => setAudioFile(null)}>移除</button>}
@@ -165,7 +165,7 @@ export default function AvatarPage() {
           <div className="card space-y-4">
             <div className="flex items-center gap-2">
               <span className="badge-success">生成成功</span>
-              {result.durationSec > 0 && <span className="text-xs text-gray-500">时长: {result.durationSec}s | 预估费用: ¥{result.estimatedCost}</span>}
+              {result.durationSec > 0 && <span className="text-xs text-gray-500 dark:text-gray-400">时长: {result.durationSec}s | 预估费用: ¥{result.estimatedCost}</span>}
             </div>
             <video controls className="w-full rounded-lg" src={result.videoUrl} />
             <a href={result.videoUrl} download className="btn-secondary text-sm inline-block">下载视频</a>
@@ -175,13 +175,13 @@ export default function AvatarPage() {
         {/* 生成历史 */}
         {history.length > 0 && (
           <div className="card space-y-4">
-            <h2 className="text-lg font-bold text-gray-800">📋 生成历史（{history.length} 条）</h2>
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200">📋 生成历史（{history.length} 条）</h2>
             <div className="space-y-3">
               {history.map((r) => (
-                <div key={r.id} className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
+                <div key={r.id} className="flex items-center justify-between bg-gray-50 dark:bg-slate-900 rounded-xl p-4">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">{r.id}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{r.id}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       时长: {r.durationSec}s | 费用: ¥{r.estimatedCost} | {new Date(r.createdAt).toLocaleString('zh-CN')}
                     </p>
                   </div>
@@ -195,9 +195,9 @@ export default function AvatarPage() {
           </div>
         )}
 
-        <div className="card bg-gray-50 space-y-3">
-          <h3 className="font-bold text-gray-800">使用说明</h3>
-          <ul className="text-sm text-gray-600 space-y-1">
+        <div className="card bg-gray-50 dark:bg-slate-900 space-y-3">
+          <h3 className="font-bold text-gray-800 dark:text-gray-200">使用说明</h3>
+          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <li>1. 先配置阿里云 DashScope API Key</li>
             <li>2. 上传一段正面、清晰的人物说话视频</li>
             <li>3. 上传你想要的说话音频（可从 TTS 页生成）</li>

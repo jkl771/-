@@ -1,4 +1,4 @@
-﻿// ============================================
+// ============================================
 // TTS / Voice key decryption (server only)
 // ============================================
 
@@ -24,10 +24,9 @@ export function getDecryptedLLMConfig(): { baseUrl: string; apiKey: string; mode
 
 export function getDecryptedFishAudioConfig(): { baseUrl: string; apiKey: string } | null {
   const apiKey = decryptEnvKey(process.env.FISH_AUDIO_ENCRYPTED_KEY, process.env.TTS_SALT);
+  if (!apiKey) return null;
   const baseUrl = process.env.FISH_AUDIO_BASE_URL || 'https://api.fish.audio';
-  const finalKey = apiKey || '0ef9617a1ca24ebcb2f8ac86eaff55c2';
-  if (!finalKey) return null;
-  return { baseUrl, apiKey: finalKey };
+  return { baseUrl, apiKey };
 }
 
 export function getDecryptedCosyVoiceConfig(): { baseUrl: string; apiKey: string } | null {

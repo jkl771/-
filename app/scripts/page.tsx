@@ -56,9 +56,9 @@ function ScriptsPageInner() {
   };
   // 详情视图
   if (viewId) {
-    if (loading) return <div className="text-center py-20 text-gray-400">加载中...</div>;
+    if (loading) return <div className="text-center py-20 text-gray-400 dark:text-gray-500">加载中...</div>;
   if (error) return <div className="text-center py-20 text-red-400">{error} <button className="text-blue-600 ml-2" onClick={() => { setError(''); window.location.reload(); }}>重试</button></div>;
-    if (!detail) return <div className="text-center py-20 text-gray-400">未找到该文案</div>;
+    if (!detail) return <div className="text-center py-20 text-gray-400 dark:text-gray-500">未找到该文案</div>;
     const meta = detail.metadata || {};
     return (
       <div>
@@ -68,37 +68,37 @@ function ScriptsPageInner() {
         </div>
         <div className="card mb-6">
           <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">标题</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">标题</span>
               <span className="font-medium text-sm">{detail.title}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">作者</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">作者</span>
               <span className="font-medium text-sm">{detail.author || '-'}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">平台</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">平台</span>
               <span className="font-medium text-sm">{meta.platform || detail.platform || '-'}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">时长</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">时长</span>
               <span className="font-medium text-sm">
                 {meta.duration ? `${Math.floor(meta.duration / 60)}分${Math.floor(meta.duration % 60)}秒` : '-'}
               </span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">识别方式</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">识别方式</span>
               <span className="font-medium text-sm">{sourceLabel[meta.source] || meta.source || '-'}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">字数</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">字数</span>
               <span className="font-medium text-sm">{detail.rawText?.length || 0} 字</span>
             </div>
           </div>
           {meta.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
               {meta.tags.map((tag: string, i: number) => (
-                <span key={i} className="bg-blue-50 text-blue-600 rounded-full px-3 py-1 text-xs">{tag}</span>
+                <span key={i} className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-full px-3 py-1 text-xs">{tag}</span>
               ))}
             </div>
           )}
@@ -110,7 +110,7 @@ function ScriptsPageInner() {
               📋 复制
             </button>
           </div>
-          <div className="bg-gray-50 rounded-lg p-4 text-sm max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
+          <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 text-sm max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
             {detail.rawText}
           </div>
         </div>
@@ -119,14 +119,14 @@ function ScriptsPageInner() {
             <h2 className="font-semibold mb-3">⏱ 时间轴（{detail.segments.length} 段）</h2>
             <div className="space-y-1 max-h-[500px] overflow-y-auto">
               {detail.segments.map((seg: any, i: number) => (
-                <div key={i} className="flex gap-3 py-2 px-3 rounded hover:bg-blue-50 transition-colors text-sm border-b border-gray-100 last:border-0">
+                <div key={i} className="flex gap-3 py-2 px-3 rounded hover:bg-blue-50 dark:bg-blue-900/30 transition-colors text-sm border-b border-gray-100 dark:border-slate-700 last:border-0">
                   <span className="font-mono text-blue-600 whitespace-nowrap text-xs pt-0.5 min-w-[50px]">
                     {seg.startTime != null
                       ? `${Math.floor(seg.startTime / 60)}:${String(Math.floor(seg.startTime % 60)).padStart(2, '0')}`
                       : ''}
                   </span>
                   <span className="flex-1">{seg.text}</span>
-                  <span className="text-gray-400 text-xs whitespace-nowrap">
+                  <span className="text-gray-400 dark:text-gray-500 text-xs whitespace-nowrap">
                     {seg.endTime != null && seg.endTime > 0
                       ? `${Math.floor(seg.endTime / 60)}:${String(Math.floor(seg.endTime % 60)).padStart(2, '0')}`
                       : ''}
@@ -168,24 +168,24 @@ function ScriptsPageInner() {
         <button onClick={handleSearch} className="btn-primary text-sm">🔍 搜索</button>
       </div>
       {list.length === 0 ? (
-        <div className="card text-center py-20 text-gray-400">
+        <div className="card text-center py-20 text-gray-400 dark:text-gray-500">
           <p className="text-4xl mb-3">📭</p>
           <p>还没有提取过文案</p>
           <a href="/extract" className="text-blue-600 hover:underline text-sm mt-2 inline-block">去提取第一个文案 →</a>
         </div>
       ) : (
         <div className="space-y-4">
-          {list.length === 0 ? (<div className='text-center text-gray-400 py-8'>暂无文案，去<a href='/extract' className='text-blue-600 hover:underline'>提取页面</a>添加</div>) : list.map((item: any) => {
+          {list.length === 0 ? (<div className='text-center text-gray-400 dark:text-gray-500 py-8'>暂无文案，去<a href='/extract' className='text-blue-600 hover:underline'>提取页面</a>添加</div>) : list.map((item: any) => {
             const meta = item.metadata || {};
             return (
               <div key={item.id} className="card hover:shadow-md transition-shadow group">
                 <div className="flex justify-between items-start">
                   <a href={`/scripts?id=${item.id}`} className="flex-1 block">
                     <h3 className="font-semibold group-hover:text-blue-600 transition-colors mb-1">{item.title}</h3>
-                    <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">
                       {item.rawText?.slice(0, 120)}...
                     </p>
-                    <div className="flex gap-3 text-xs text-gray-400">
+                    <div className="flex gap-3 text-xs text-gray-400 dark:text-gray-500">
                       <span>{item.author}</span>
                       <span>{meta.duration ? `${Math.floor(meta.duration / 60)}分${Math.floor(meta.duration % 60)}秒` : ''}</span>
                       <span>{item.rawText?.length || 0} 字</span>
@@ -196,7 +196,7 @@ function ScriptsPageInner() {
                   </a>
                   <div className="flex flex-col items-end gap-2 ml-4">
                     <button onClick={() => handleDelete(item.id)} className="text-xs text-red-600 hover:underline">🗑️ 删除</button>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
                       {new Date(item.createdAt).toLocaleString('zh-CN')}
                     </span>
                   </div>
@@ -211,7 +211,7 @@ function ScriptsPageInner() {
 }
 export default function ScriptsPage() {
   return (
-    <Suspense fallback={<div className="text-center py-20 text-gray-400">加载中...</div>}>
+    <Suspense fallback={<div className="text-center py-20 text-gray-400 dark:text-gray-500">加载中...</div>}>
       <ScriptsPageInner />
     </Suspense>
   );

@@ -87,7 +87,7 @@ function MaterialsInner() {
   };
 
   if (error) return <div className='text-center py-20 text-red-400'>{error} <button className='text-blue-600 ml-2' onClick={() => { setError(''); window.location.reload(); }}>重试</button></div>;
-  if (loading) return <div className="text-center py-20 text-gray-400">加载中...</div>;
+  if (loading) return <div className="text-center py-20 text-gray-400 dark:text-gray-500">加载中...</div>;
 
   if (viewId && detail) {
     return (
@@ -103,30 +103,30 @@ function MaterialsInner() {
             <div className="flex gap-2">
               <button onClick={() => openFolder(detail.id)} className="btn-secondary text-sm">📂 打开本地文件夹</button>
               <a href={`/scripts?id=${detail.id}`} className="btn-primary text-sm">📝 查看文案</a>
-              <button onClick={() => handleDelete(detail.id)} className="btn-secondary text-sm text-red-600 border-red-300 hover:bg-red-50">🗑️ 删除</button>
+              <button onClick={() => handleDelete(detail.id)} className="btn-secondary text-sm text-red-600 border-red-300 hover:bg-red-50 dark:bg-red-900/30">🗑️ 删除</button>
             </div>
           </div>
           {folderMsg && <p className="text-sm text-green-600 mb-3">{folderMsg}</p>}
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">作者</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">作者</span>
               <span className="font-medium text-sm">{detail.author || "-"}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">平台</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">平台</span>
               <span className="font-medium text-sm">{detail.platform || "-"}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">时长</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">时长</span>
               <span className="font-medium text-sm">{formatDuration(detail.duration)}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">创建时间</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">创建时间</span>
               <span className="font-medium text-sm">{detail.created_at ? new Date(detail.created_at).toLocaleString("zh-CN") : "-"}</span>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-xs text-gray-500 block">链接</span>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">链接</span>
               <a href={detail.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm truncate block">打开原链接</a>
             </div>
           </div>
@@ -135,7 +135,7 @@ function MaterialsInner() {
         {detail.description && (
           <div className="card">
             <h3 className="font-semibold mb-2">📝 视频描述</h3>
-            <p className="text-sm text-gray-600 whitespace-pre-wrap">{detail.description}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{detail.description}</p>
           </div>
         )}
 
@@ -144,7 +144,7 @@ function MaterialsInner() {
             <h3 className="font-semibold mb-2">🏷️ 标签</h3>
             <div className="flex flex-wrap gap-2">
               {detail.tags.map((tag: string, i: number) => (
-                <span key={i} className="bg-blue-50 text-blue-600 rounded-full px-3 py-1 text-xs">{tag}</span>
+                <span key={i} className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-full px-3 py-1 text-xs">{tag}</span>
               ))}
             </div>
           </div>
@@ -154,7 +154,7 @@ function MaterialsInner() {
           <div className="card">
             <h3 className="font-semibold mb-2">🎬 视频</h3>
             <video controls className="w-full rounded-lg" src={`/api/materials/file?id=${viewId}&type=video`} />
-            <p className="text-xs text-gray-400 mt-2">大小：{formatSize(detail.video_size)}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">大小：{formatSize(detail.video_size)}</p>
           </div>
         )}
 
@@ -163,14 +163,14 @@ function MaterialsInner() {
             <h3 className="font-semibold mb-2">🎵 音频</h3>
             <audio controls className="w-full" src={`/api/materials/file?id=${viewId}&type=audio`} />
             <div className="flex justify-between items-center mt-2">
-              <p className="text-xs text-gray-400">大小：{formatSize(detail.audio_size)}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">大小：{formatSize(detail.audio_size)}</p>
               <button onClick={() => openFolder(detail.id)} className="text-xs text-blue-600 hover:underline">📂 打开文件</button>
             </div>
           </div>
         )}
 
         {!detail.has_video && !detail.has_audio && (
-          <p className="text-gray-400 text-sm card">音频/视频文件未下载</p>
+          <p className="text-gray-400 dark:text-gray-500 text-sm card">音频/视频文件未下载</p>
         )}
 
         <div className="card">
@@ -201,7 +201,7 @@ function MaterialsInner() {
       </div>
 
       {list.length === 0 ? (
-        <div className="card text-center py-20 text-gray-400">
+        <div className="card text-center py-20 text-gray-400 dark:text-gray-500">
           <p className="text-4xl mb-3">📭</p>
           <p>素材库为空</p>
           <a href="/extract" className="text-blue-600 hover:underline text-sm mt-2 inline-block">去提取第一个视频 →</a>
@@ -216,8 +216,8 @@ function MaterialsInner() {
                     <span className="bg-blue-100 text-blue-700 rounded px-2 py-0.5 text-xs font-medium">{item.platform || "未知"}</span>
                     <h3 className="font-semibold group-hover:text-blue-600 transition-colors">{item.title}</h3>
                   </div>
-                  <p className="text-sm text-gray-500 mb-2">{item.author || "未知作者"}</p>
-                  <div className="flex gap-4 text-xs text-gray-400">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{item.author || "未知作者"}</p>
+                  <div className="flex gap-4 text-xs text-gray-400 dark:text-gray-500">
                     <span>⏱ {formatDuration(item.duration)}</span>
                     {item.has_video && <span>🎬 {formatSize(item.video_size)}</span>}
                     {item.has_audio && <span>🎵 {formatSize(item.audio_size)}</span>}
@@ -231,7 +231,7 @@ function MaterialsInner() {
                   </div>
                   <button onClick={() => openFolder(item.id)} className="text-xs text-blue-600 hover:underline">📂 打开文件夹</button>
                   <button onClick={() => handleDelete(item.id)} className="text-xs text-red-600 hover:underline">🗑️ 删除</button>
-                  <span className="text-xs text-gray-400">{item.created_at ? new Date(item.created_at).toLocaleString("zh-CN") : ""}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">{item.created_at ? new Date(item.created_at).toLocaleString("zh-CN") : ""}</span>
                 </div>
               </div>
             </div>
@@ -244,7 +244,7 @@ function MaterialsInner() {
 
 export default function MaterialsPage() {
   return (
-    <Suspense fallback={<div className="text-center py-20 text-gray-400">加载中...</div>}>
+    <Suspense fallback={<div className="text-center py-20 text-gray-400 dark:text-gray-500">加载中...</div>}>
       <MaterialsInner />
     </Suspense>
   );

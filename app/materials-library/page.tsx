@@ -111,14 +111,14 @@ export default function MaterialsLibraryPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">📚 素材库管理</h1>
-      {msg && <div className="mb-4 p-3 rounded-lg bg-blue-50 text-blue-800 text-sm">{msg}</div>}
+      {msg && <div className="mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-800 text-sm">{msg}</div>}
       {/* 统计概览 */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="card text-center"><div className="text-2xl font-bold">{stats.candidates}</div><div className="text-sm text-gray-500">候选素材</div></div>
-          <div className="card text-center"><div className="text-2xl font-bold">{stats.approved}</div><div className="text-sm text-gray-500">已入库</div></div>
-          <div className="card text-center"><div className="text-2xl font-bold">{Object.keys(stats.byStyle || {}).length}</div><div className="text-sm text-gray-500">风格分类</div></div>
-          <div className="card text-center"><div className="text-2xl font-bold">{crawler?.sources?.length || 0}</div><div className="text-sm text-gray-500">爬虫源</div></div>
+          <div className="card text-center"><div className="text-2xl font-bold">{stats.candidates}</div><div className="text-sm text-gray-500 dark:text-gray-400">候选素材</div></div>
+          <div className="card text-center"><div className="text-2xl font-bold">{stats.approved}</div><div className="text-sm text-gray-500 dark:text-gray-400">已入库</div></div>
+          <div className="card text-center"><div className="text-2xl font-bold">{Object.keys(stats.byStyle || {}).length}</div><div className="text-sm text-gray-500 dark:text-gray-400">风格分类</div></div>
+          <div className="card text-center"><div className="text-2xl font-bold">{crawler?.sources?.length || 0}</div><div className="text-sm text-gray-500 dark:text-gray-400">爬虫源</div></div>
         </div>
       )}
       {/* Tab 切换 */}
@@ -158,7 +158,7 @@ export default function MaterialsLibraryPage() {
             )}
           </div>
           {candidates.length === 0 ? (
-            <div className="card text-gray-500 text-center py-8">暂无候选素材，请先添加</div>
+            <div className="card text-gray-500 dark:text-gray-400 text-center py-8">暂无候选素材，请先添加</div>
           ) : (
             candidates.map((c, i) => (
               <div key={i} className="card">
@@ -167,7 +167,7 @@ export default function MaterialsLibraryPage() {
                   {c.tags?.style?.map((s: string) => <span key={s} className="badge-info text-xs">{s}</span>)}
                   {c.tags?.emotion?.map((e: string) => <span key={e} className="badge-warning text-xs">{e}</span>)}
                   {c.tags?.scene?.map((s: string) => <span key={s} className="badge-success text-xs">{s}</span>)}
-                  <span className="text-xs text-gray-400">质量:{c.tags?.quality}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">质量:{c.tags?.quality}</span>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => handleApprove(c.text)} className="btn-primary text-xs">✅ 批准入库</button>
@@ -196,25 +196,25 @@ export default function MaterialsLibraryPage() {
                 {Object.entries(gr).map(([k,a])=>a.length>0&&<span key={k} className={`px-2 py-0.5 rounded-full ${sg[k]?.b} ${sg[k]?.c}`}>{sg[k]?.i} {a.length}</span>)}
               </div>
             </div>
-            {approved.length===0?<div className="card text-gray-500 text-center py-8">暂无入库素材</div>:
+            {approved.length===0?<div className="card text-gray-500 dark:text-gray-400 text-center py-8">暂无入库素材</div>:
               Object.entries(gr).filter(([,a])=>a.length>0).map(([sk,a])=>{
                 const mt=sg[sk]||sg.casual;
                 return (
                   <details key={sk} open={sk==='casual'} className={`rounded-xl border ${mt.b}`}>
                     <summary className={`px-4 py-3 cursor-pointer font-medium text-sm flex items-center gap-2 ${mt.c}`}>
                       <span>{mt.i} {mt.l}</span>
-                      <span className="ml-auto text-xs font-normal text-gray-500">{a.length} 条</span>
-                      <span className="text-xs text-gray-400">▼</span>
+                      <span className="ml-auto text-xs font-normal text-gray-500 dark:text-gray-400">{a.length} 条</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">▼</span>
                     </summary>
                     <div className="px-3 pb-3 space-y-2">
                       {a.map((m:any,i:number)=>(
-                        <div key={i} className="bg-white rounded-lg p-3 text-sm leading-relaxed border border-gray-100 shadow-sm">
-                          <div className="text-gray-800">{m.text}</div>
+                        <div key={i} className="bg-white dark:bg-slate-800 rounded-lg p-3 text-sm leading-relaxed border border-gray-100 dark:border-slate-700 shadow-sm">
+                          <div className="text-gray-800 dark:text-gray-200">{m.text}</div>
                           <div className="flex flex-wrap gap-1 mt-1.5">
-                            {m.tags?.emotion?.map((e:string)=><span key={e} className="text-xs px-1.5 py-0.5 rounded bg-amber-50 text-amber-600">{e}</span>)}
+                            {m.tags?.emotion?.map((e:string)=><span key={e} className="text-xs px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-900/30 text-amber-600">{e}</span>)}
                             {m.tags?.hookType?.map((h:string)=><span key={h} className="text-xs px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-600">{h}</span>)}
-                            {m.tags?.scene?.map((s:string)=><span key={s} className="text-xs px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600">{s}</span>)}
-                            <span className="text-xs text-gray-400 ml-auto">质量:{m.tags?.quality}</span>
+                            {m.tags?.scene?.map((s:string)=><span key={s} className="text-xs px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600">{s}</span>)}
+                            <span className="text-xs text-gray-400 dark:text-gray-500 ml-auto">质量:{m.tags?.quality}</span>
                           </div>
                         </div>
                       ))}
@@ -233,7 +233,7 @@ export default function MaterialsLibraryPage() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-lg font-semibold">🕷️ 爬虫功能</h2>
-                <p className="text-sm text-gray-500">默认关闭，开启后可从网站抓取话术素材</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">默认关闭，开启后可从网站抓取话术素材</p>
               </div>
               <button onClick={handleCrawlerToggle} className={`px-4 py-2 rounded-lg text-sm font-medium ${crawler?.enabled ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}>
                 {crawler?.enabled ? '🔴 关闭爬虫' : '🟢 开启爬虫'}
@@ -251,7 +251,7 @@ export default function MaterialsLibraryPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <div className="font-medium text-sm">{s.name}</div>
-                  <div className="text-xs text-gray-400">{s.url}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500">{s.url}</div>
                   <div className="text-xs mt-1">
                     状态：<span className={s.status === 'passed' ? 'text-green-600' : s.status === 'failed' ? 'text-red-600' : 'text-gray-500'}>
                       {s.status === 'passed' ? '✅ 已通过' : s.status === 'failed' ? '❌ 失败' : s.status === 'testing' ? '⏳ 测试中' : '⬜ 未测试'}

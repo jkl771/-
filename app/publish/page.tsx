@@ -201,13 +201,13 @@ export default function PublishPage() {
           <h2 className="text-lg font-semibold mb-4">发布记录</h2>
           <div className="space-y-3">
             {records.map((r) => (
-              <div key={r.id} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+              <div key={r.id} className="flex items-center justify-between bg-gray-50 dark:bg-slate-900 dark:bg-gray-800 rounded-lg p-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium">{r.title}</span>
                     <span className={statusBadge(r.status)}>{r.status}</span>
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     平台: {PLATFORMS.find((p) => p.id === r.platform)?.name || r.platform}
                     {r.scheduledAt && ' | 定时: ' + r.scheduledAt}
                   </p>

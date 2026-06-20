@@ -59,12 +59,12 @@ export default function ExtractPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-2">🔗 链接文案提取</h1>
-      <p className="text-gray-500 mb-6 text-sm">粘贴分享链接 → 自动下载视频 → 提取音频 → 语音转文字（免费，无需 API Key）</p>
+      <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">粘贴分享链接 → 自动下载视频 → 提取音频 → 语音转文字（免费，无需 API Key）</p>
       {/* 重复检测提示 */}
       {duplicate && (
         <div className="card border-yellow-300 bg-yellow-50 mb-6">
           <p className="text-yellow-800 font-medium">⚠️ 该视频已提取过！</p>
-          <p className="text-sm text-gray-600 mt-1">标题：{duplicate.title}，作者：{duplicate.author}，平台：{duplicate.platform}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">标题：{duplicate.title}，作者：{duplicate.author}，平台：{duplicate.platform}</p>
           <div className="flex gap-3 mt-3">
             <a href={`/materials?id=${duplicate.id}`} className="btn-primary text-sm">📦 查看素材</a>
             <button onClick={() => { setDuplicate(null); handleExtractForce(); }} className="btn-secondary text-sm">🔄 仍然重新提取</button>
@@ -104,7 +104,7 @@ export default function ExtractPage() {
           <a href="/scripts" className="btn-secondary">📋 文案库</a>
         </div>
         {loading && (
-          <div className="mt-4 bg-blue-50 rounded-lg p-4 text-sm text-blue-700">
+          <div className="mt-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-sm text-blue-700">
             <div className="flex items-center gap-2 mb-3">
               <span className="animate-spin">⏳</span>
               <span className="font-medium">{step || '正在处理...'}</span>
@@ -132,9 +132,9 @@ export default function ExtractPage() {
         )}
       </div>
       {error && (
-        <div className="card border-red-200 bg-red-50 mb-6">
+        <div className="card border-red-200 bg-red-50 dark:bg-red-900/30 mb-6">
           <p className="text-red-600 font-medium">❌ {error}</p>
-          <p className="text-sm text-gray-500 mt-2">可尝试「📝 粘贴纯文案」模式手动输入文案</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">可尝试「📝 粘贴纯文案」模式手动输入文案</p>
         </div>
       )}
       {result && (
@@ -145,30 +145,30 @@ export default function ExtractPage() {
           <div className="card">
             <h2 className="text-lg font-semibold mb-3">📊 提取结果</h2>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">标题</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">标题</span>
                 <span className="font-medium text-sm">{result.title}</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">作者</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">作者</span>
                 <span className="font-medium text-sm">{result.author || '-'}</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">平台</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">平台</span>
                 <span className="font-medium text-sm">{result.platform || result.metadata?.platform || '-'}</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">时长</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">时长</span>
                 <span className="font-medium text-sm">
                   {result.metadata?.duration ? `${Math.floor(result.metadata.duration / 60)}分${Math.floor(result.metadata.duration % 60)}秒` : '-'}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">识别方式</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">识别方式</span>
                 <span className="font-medium text-sm">{sourceLabel[result.metadata?.source] || result.metadata?.source || '-'}</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <span className="text-xs text-gray-500 block">字数</span>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3">
+                <span className="text-xs text-gray-500 dark:text-gray-400 block">字数</span>
                 <span className="font-medium text-sm">{result.rawText?.length || 0} 字</span>
               </div>
             </div>
@@ -178,14 +178,14 @@ export default function ExtractPage() {
               <h3 className="font-semibold">📄 完整文案</h3>
               <button className="text-xs text-blue-600 hover:underline" onClick={() => navigator.clipboard.writeText(result.rawText)}>📋 复制</button>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-sm max-h-96 overflow-y-auto whitespace-pre-wrap leading-relaxed">{result.rawText}</div>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 text-sm max-h-96 overflow-y-auto whitespace-pre-wrap leading-relaxed">{result.rawText}</div>
           </div>
           {result.segments?.length > 0 && (
             <div className="card">
               <h3 className="font-semibold mb-3">⏱ 时间轴（{result.segments.length} 段）</h3>
               <div className="space-y-1 max-h-96 overflow-y-auto">
                 {result.segments.map((seg: any, i: number) => (
-                  <div key={i} className="flex gap-3 py-2 px-3 rounded hover:bg-blue-50 text-sm border-b border-gray-100 last:border-0">
+                  <div key={i} className="flex gap-3 py-2 px-3 rounded hover:bg-blue-50 dark:bg-blue-900/30 text-sm border-b border-gray-100 dark:border-slate-700 last:border-0">
                     <span className="font-mono text-blue-600 text-xs min-w-[50px]">
                       {seg.startTime != null ? `${Math.floor(seg.startTime / 60)}:${String(Math.floor(seg.startTime % 60)).padStart(2, '0')}` : ''}
                     </span>
